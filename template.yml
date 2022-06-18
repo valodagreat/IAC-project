@@ -1,0 +1,40 @@
+Description: Template for the creation of an instance
+
+Parameters:
+    AMItoUse:
+        Description: AMI to use for our base image
+        Type: String
+        Default: ami-08d4ac5b634553e16
+    KeyName:
+        Description: The KeyName.pem used to create the instance
+        Type: String
+        Default: valocicd
+    InstanceType:
+        Description: Instance types permitted to be used
+        Type: String
+        Default: t3.micro
+        AllowedValues:
+          - t3.micro
+          - t3.small
+          - t3.medium
+          - t3.large
+
+Resources:
+    EC2Instance:
+        Type: AWS::EC2::Instance
+        Properties:
+            ImageId: !Ref AMItoUse
+            InstanceType: !Ref InstanceType
+            KeyName: !Ref KeyName
+            SecurityGroups:
+              - !Ref SecurityGroups
+
+    SecurityGroups:
+        Type: AWS::EC2::SecurityGroup
+        Properties:
+            GroupDescription: Enable SSH access via port 22
+            SecurityGroupIngress:
+              - FromPort: 22
+                ToPort: 22
+                IpProtocol: tcp
+                CidrIp: 0.0.0.0/0

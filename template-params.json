@@ -1,0 +1,14 @@
+[
+    {
+        "ParameterKey": "KeyName",
+        "ParameterValue": "valocicd"
+    },
+    {
+        "ParameterKey": "AMItoUse",
+        "ParameterValue": "ami-08d4ac5b634553e16"
+    },
+    {
+        "ParameterKey": "InstanceType",
+        "ParameterValue": "t3.micro"
+    }
+]
