@@ -2,25 +2,42 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+# Define a command that would be reusable.
+commands:
+  destroy_environment:
+    steps:
+      - run:
+          name: destroy_environment
+          when: on_fail
+          command: |
+            aws cloudformation delete-stack --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7}
+
 # Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
-  # create_infrastructure:
-  #   # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-  #   # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
-  #   docker:
-  #     - image: amazon/aws-cli
-  #   # Add steps to the job
-  #   # See: https://circleci.com/docs/2.0/configuration-reference/#steps
-  #   steps:
-  #     - checkout
-  #     - run:
-  #         name: "Create Cloudformation Stack for an EC2 Instance"
-  #         command: |
-  #           aws cloudformation deploy \
-  #             --template-file template.yml \
-  #             --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:5} \
-  #             --region us-east-1
+  create_infrastructure:
+    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    docker:
+      - image: amazon/aws-cli
+    # Add steps to the job
+    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+    steps:
+      - checkout
+      - run:
+          name: "Create Cloudformation Stack for an EC2 Instance"
+          command: |
+            aws cloudformation deploy \
+              --template-file template.yml \
+              --stack-name myStack-${CIRCLE_WORKFLOW_ID:0:7} \
+              --region us-east-1
+  smoke_test:
+    docker:
+      - image: alpine:latest
+    steps:
+      - run:
+          name: smoke test
+          command:  return 1
+      - destroy_environment
   # configure_infrastructure:
   #   # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
   #   # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
@@ -41,25 +58,28 @@ jobs:
   #         command: |
   #           ansible-playbook -i inventory.txt main.yml
 
-  smoke_test:
-    docker:
-      - image: python:3.7-alpine3.11
-    steps:
-      - run: apk add --update curl
-      - run:
-          name: smoke test
-          command: |
-            URL="https://blog.udacity.com/"
-            if curl -s --head ${URL}
-            then
-              return 0
-            else
-              return 1
-            fi
+  # smoke_test:
+  #   docker:
+  #     - image: python:3.7-alpine3.11
+  #   steps:
+  #     - run: apk add --update curl
+  #     - run:
+  #         name: smoke test
+  #         command: |
+  #           URL="https://blog.udacity.com/"
+  #           if curl -s --head ${URL}
+  #           then
+  #             return 0
+  #           else
+  #             return 1
+  #           fi
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   smoke_test-workflow:
     jobs:
-      - smoke_test
+      - create_infrastructure
+      - smoke_test:
+          requires:
+            - create_infrastructure
