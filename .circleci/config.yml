@@ -35,6 +35,7 @@ jobs:
               --region us-east-1
   smoke_test:
     docker:
+      - image: amazon/aws-cli
       - image: alpine:latest
     steps:
       - run:
