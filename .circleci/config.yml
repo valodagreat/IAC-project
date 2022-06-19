@@ -2,6 +2,9 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+orbs: 
+  aws-cli: circleci/aws-cli@3.1.1
+
 # Define a command that would be reusable.
 commands:
   destroy_environment:
