@@ -40,7 +40,7 @@ aws cloudformation deploy --template-file template.yml --stack-name "Name3" --pa
 
 * Add the Public IP of your instance to the Inventory file
 
-* Run ansible playbook by specifying key file here or define it in your ansible.cfg file
+* Run ansible playbook by specifying key file here or by defining it in your ansible.cfg file
 ```bash
 ansible-playbook -i inventory.txt main.yml --key-file "~/.ssh/mykey.pem"
 ```
