@@ -1,7 +1,7 @@
 
-# Circle-Ci-Practice
+# IAC-Project
 
-Circle Ci Practice is a project that automates the deployment of my web app and web server. **AWS CloudFormation** was the IAC tool used to automate the deployment. I deployed my index.html using **AWS S3 bucket and Cloudfront**, while I deployed my server using **AWS EC2 instance** and **Ansible** as the configuration management tool for the server.
+IAC Project is a project that automates the deployment of my web app and web server. **AWS CloudFormation** was the IAC tool used to automate the deployment. I deployed my index.html using **AWS S3 bucket and Cloudfront**, while I deployed my server using **AWS EC2 instance** and **Ansible** as the configuration management tool for the server.
 
 ## Setting up the Environment
 
